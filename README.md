@@ -1,6 +1,6 @@
 # Settings Connect
 
-Settings Connect is a cross-platform peer-to-peer messenger prototype based on the Nuvia concept. It includes an Android APK and a portable Windows PC app that can communicate with each other. The launcher stays clearly identifiable as Settings Connect rather than impersonating Android's system Settings app.
+Settings Connect is a cross-platform peer-to-peer messenger prototype based on the Nuvia concept. It includes an Android APK, a portable Windows PC app, and an HTTPS browser version that can communicate with each other. The launcher stays clearly identifiable as Settings Connect rather than impersonating Android's system Settings app.
 
 ## What works
 
@@ -31,6 +31,7 @@ This version has no central account server. To use the same visible ID on a phon
 - Some networks require a TURN relay. The free broker/STUN configuration cannot guarantee calls on every carrier or Wi-Fi network.
 - Attachments and local history are capped to reduce storage use.
 - The Windows executable is an unsigned development build, so Windows SmartScreen may display a warning.
+- Desktop version 2.0.1 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Settings Connect\\settings-connect.log`.
 
 A production release needs an authenticated backend, database, storage service, push notifications, TURN infrastructure, account recovery, safety tooling, code signing, and a security review.
 
@@ -46,7 +47,11 @@ A production release needs an authenticated backend, database, storage service, 
 1. Open the repository's **Actions** tab.
 2. Open the latest successful **Build Windows PC App** run.
 3. Download the `settings-connect-windows-pc` artifact.
-4. Unzip and run `Settings-Connect-PC-2.0.0.exe`.
+4. Unzip and run `Settings-Connect-PC-2.0.1.exe`.
+
+## Open in a browser
+
+Use [Settings Connect Web](https://settings-connect-web.arad649.chatgpt.site) on a Windows, macOS, Linux, Android, or iOS browser. Allow microphone/camera access when prompted for voice notes and calls. The browser version uses the same visible `@UserID` and peer-to-peer connection format as Android and Windows.
 
 ## Test phone to PC
 
