@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " SettingsConnect/2.1");
+        settings.setUserAgentString(settings.getUserAgentString() + " SettingsConnect/2.2");
         webView.setBackgroundColor(0xFF070B19);
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new AndroidBridge(), "AndroidApp");
@@ -141,7 +141,6 @@ public class MainActivity extends Activity {
     }
 
     private void showNotification(String title, String body, String tag) {
-        if (hasWindowFocus()) return;
         if (Build.VERSION.SDK_INT >= 33
                 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
         Intent openIntent = new Intent(this, MainActivity.class)
@@ -160,6 +159,8 @@ public class MainActivity extends Activity {
                 .setStyle(new Notification.BigTextStyle().bigText(body))
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setCategory(call ? Notification.CATEGORY_CALL : Notification.CATEGORY_MESSAGE)
                 .build();
         NotificationManager manager = getSystemService(NotificationManager.class);
@@ -206,7 +207,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.1.0";
+            return "2.2.0";
         }
 
         @JavascriptInterface
