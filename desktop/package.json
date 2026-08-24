@@ -1,6 +1,6 @@
 {
   "name": "settings-connect-desktop",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Settings Connect peer-to-peer desktop messenger",
   "main": "main.js",
   "author": "Arad649",
