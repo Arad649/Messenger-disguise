@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " Nuvia/2.4");
+        settings.setUserAgentString(settings.getUserAgentString() + " Nuvia/2.5");
         webView.setBackgroundColor(0xFF070B19);
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new AndroidBridge(), "AndroidApp");
@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.4.0";
+            return "2.5.0";
         }
 
         @JavascriptInterface

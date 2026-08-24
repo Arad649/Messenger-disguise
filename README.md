@@ -4,9 +4,11 @@ Nuvia is a cross-platform peer-to-peer messenger prototype for Android, Windows,
 
 ## What works
 
-- Create a local account with a display name, public `@UserID`, and password
+- Create a local account or choose **Log in** to save an existing `@UserID`, display name, and password on a new device
 - Stay signed in automatically by default, with an optional password-on-launch setting
 - Display the active `@UserID`, online state, and device type in every main header
+- Share your User ID and add link through the device share sheet, copy the ID, or show a scannable QR code
+- Show an explicit **Online** or **Offline** presence label in contact rows, chat headers, and profile sheets
 - Add a person by universal ID without a phone number or country code
 - Connect Android phones and Windows PCs under the same visible ID system
 - Send live text messages, voice notes, images, and original emoji stickers
@@ -27,7 +29,7 @@ Connections use [PeerJS 1.5.5](https://peerjs.com/) and WebRTC. WebRTC data and 
 
 The password is processed with PBKDF2-SHA-256 and a random salt, then stored as a derived hash in that device's local storage. The original password is not stored.
 
-This version has no central account server. To use the same visible ID on a phone and PC, create the same `@UserID` on each device. Each platform uses its own endpoint (`mobile` or `desktop`) so both can be online at once. Passwords and message history are not synchronized between devices.
+This version has no central account server. To use the same visible ID on a phone and PC, create or log in with the same `@UserID` on each device. Each platform uses its own endpoint (`mobile` or `desktop`) so both can be online at once. A new-device login saves credentials locally; it cannot validate an account against a server, restore messages, or synchronize passwords and history.
 
 ## Important prototype limits
 
@@ -37,7 +39,7 @@ This version has no central account server. To use the same visible ID on a phon
 - Some networks require a TURN relay. The free broker/STUN configuration cannot guarantee calls on every carrier or Wi-Fi network.
 - Chat history has no app-defined message count or time limit. Device storage remains finite, and large media is stored separately in the browser/WebView media database.
 - The Windows executable is an unsigned development build, so Windows SmartScreen may display a warning.
-- Desktop version 2.4.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Nuvia\\settings-connect.log`.
+- Desktop version 2.5.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Nuvia\\settings-connect.log`.
 
 A production release needs an authenticated backend, database, storage service, push notifications, TURN infrastructure, account recovery, safety tooling, code signing, and a security review.
 
@@ -53,7 +55,7 @@ A production release needs an authenticated backend, database, storage service, 
 1. Open the repository's **Actions** tab.
 2. Open the latest successful **Build Windows PC App** run.
 3. Download the `nuvia-windows-pc` artifact.
-4. Unzip and run `Nuvia-PC-2.4.0.exe`.
+4. Unzip and run `Nuvia-PC-2.5.0.exe`.
 
 ## Open in a browser
 
