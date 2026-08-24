@@ -2,9 +2,14 @@ package com.arad.settingschat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -19,12 +24,16 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     private static final int MEDIA_PERMISSION_REQUEST = 41;
     private static final int FILE_PICKER_REQUEST = 42;
+    private static final int NOTIFICATION_PERMISSION_REQUEST = 43;
+    private static final String NOTIFICATION_CHANNEL = "settings_connect_messages";
     private WebView webView;
     private ValueCallback<Uri[]> fileCallback;
+    private int notificationId = 100;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -33,6 +42,7 @@ public class MainActivity extends Activity {
         getWindow().setNavigationBarColor(0xFF070B19);
         webView = new WebView(this);
         setContentView(webView);
+        createNotificationChannel();
         configureWebView();
         requestMediaPermissions();
         loadApplication();
@@ -47,7 +57,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " SettingsConnect/2.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " SettingsConnect/2.1");
         webView.setBackgroundColor(0xFF070B19);
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new AndroidBridge(), "AndroidApp");
@@ -96,7 +106,64 @@ public class MainActivity extends Activity {
     }
 
     private void requestMediaPermissions() {
-        if (!hasMediaPermissions()) requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, MEDIA_PERMISSION_REQUEST);
+        ArrayList<String> missing = new ArrayList<>();
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            missing.add(Manifest.permission.CAMERA);
+        }
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            missing.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            missing.add(Manifest.permission.POST_NOTIFICATIONS);
+        }
+        if (!missing.isEmpty()) requestPermissions(missing.toArray(new String[0]), MEDIA_PERMISSION_REQUEST);
+    }
+
+    private void createNotificationChannel() {
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager == null) return;
+        NotificationChannel channel = new NotificationChannel(
+                NOTIFICATION_CHANNEL,
+                "Messages and calls",
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        channel.setDescription("New Settings Connect messages, stories, and incoming calls");
+        channel.enableVibration(true);
+        manager.createNotificationChannel(channel);
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST);
+        }
+    }
+
+    private void showNotification(String title, String body, String tag) {
+        if (hasWindowFocus()) return;
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+        Intent openIntent = new Intent(this, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                this,
+                0,
+                openIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        boolean call = tag != null && tag.contains("call");
+        Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(new Notification.BigTextStyle().bigText(body))
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setCategory(call ? Notification.CATEGORY_CALL : Notification.CATEGORY_MESSAGE)
+                .build();
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) manager.notify(notificationId++, notification);
     }
 
     @Override
@@ -105,6 +172,15 @@ public class MainActivity extends Activity {
         if (requestCode == FILE_PICKER_REQUEST && fileCallback != null) {
             fileCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
             fileCallback = null;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if ((requestCode == MEDIA_PERMISSION_REQUEST || requestCode == NOTIFICATION_PERMISSION_REQUEST)
+                && webView != null) {
+            webView.evaluateJavascript("window.SettingsConnect && window.SettingsConnect.refresh()", null);
         }
     }
 
@@ -130,7 +206,23 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "1.0.0";
+            return "2.1.0";
+        }
+
+        @JavascriptInterface
+        public void requestNotifications() {
+            runOnUiThread(MainActivity.this::requestNotificationPermission);
+        }
+
+        @JavascriptInterface
+        public boolean notificationsAllowed() {
+            return Build.VERSION.SDK_INT < 33
+                    || checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        @JavascriptInterface
+        public void notify(String title, String body, String tag) {
+            runOnUiThread(() -> showNotification(title, body, tag));
         }
     }
 }

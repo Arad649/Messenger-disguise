@@ -61,7 +61,8 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
-      webSecurity: true
+      webSecurity: true,
+      backgroundThrottling: false
     }
   });
 
@@ -71,12 +72,12 @@ function createWindow() {
   session.defaultSession.setPermissionCheckHandler((webContents, permission, origin) => {
     return webContents === win.webContents
       && String(origin || '').startsWith(allowedOrigin)
-      && permission === 'media';
+      && ['media', 'notifications'].includes(permission);
   });
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
     const allowed = webContents === win.webContents
       && String(details.requestingUrl || '').startsWith(allowedOrigin)
-      && permission === 'media';
+      && ['media', 'notifications'].includes(permission);
     callback(allowed);
   });
 

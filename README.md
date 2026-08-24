@@ -10,6 +10,9 @@ Settings Connect is a cross-platform peer-to-peer messenger prototype based on t
 - Add a person by universal ID without a phone number or country code
 - Connect Android phones and Windows PCs under the same visible ID system
 - Send live text messages, voice notes, images, and original emoji stickers
+- Queue rapid consecutive messages while a phone or PC connection is still opening
+- Post photo or text stories that synchronize to connected contacts and expire after 24 hours
+- Receive system notifications for messages, stories, and incoming calls while the client is running
 - Make peer-to-peer audio and video calls
 - Mute audio, disable video, and switch cameras during calls
 - Keep contacts, message history, and call history locally on each device
@@ -26,12 +29,12 @@ This version has no central account server. To use the same visible ID on a phon
 ## Important prototype limits
 
 - Both people must have at least one phone or PC client open and online.
-- There is no offline delivery, push notification, cloud backup, remote account recovery, moderation, or abuse-reporting service.
+- There is no offline server delivery or push delivery after every client has been fully closed. Running/minimized clients can show device notifications.
 - Password sign-in protects the local copy on that device, but an ID is not permanently reserved globally without a server.
 - Some networks require a TURN relay. The free broker/STUN configuration cannot guarantee calls on every carrier or Wi-Fi network.
 - Attachments and local history are capped to reduce storage use.
 - The Windows executable is an unsigned development build, so Windows SmartScreen may display a warning.
-- Desktop version 2.0.1 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Settings Connect\\settings-connect.log`.
+- Desktop version 2.1.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Settings Connect\\settings-connect.log`.
 
 A production release needs an authenticated backend, database, storage service, push notifications, TURN infrastructure, account recovery, safety tooling, code signing, and a security review.
 
@@ -47,7 +50,7 @@ A production release needs an authenticated backend, database, storage service, 
 1. Open the repository's **Actions** tab.
 2. Open the latest successful **Build Windows PC App** run.
 3. Download the `settings-connect-windows-pc` artifact.
-4. Unzip and run `Settings-Connect-PC-2.0.1.exe`.
+4. Unzip and run `Settings-Connect-PC-2.1.0.exe`.
 
 ## Open in a browser
 
