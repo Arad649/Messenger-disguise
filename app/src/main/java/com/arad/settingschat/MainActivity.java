@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " SettingsChat/1.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " SettingsConnect/2.0");
         webView.setBackgroundColor(0xFF070B19);
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new AndroidBridge(), "AndroidApp");
@@ -84,9 +84,9 @@ public class MainActivity extends Activity {
             StringBuilder html = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) html.append(line).append('\n');
-            webView.loadDataWithBaseURL("https://settings-chat.local/", html.toString(), "text/html", "UTF-8", null);
+            webView.loadDataWithBaseURL("https://settings-connect.local/", html.toString(), "text/html", "UTF-8", null);
         } catch (Exception error) {
-            Toast.makeText(this, "Could not open Settings Chat", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not open Settings Connect", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -110,14 +110,14 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        webView.evaluateJavascript("window.SettingsChat && window.SettingsChat.back()", value -> {
+        webView.evaluateJavascript("window.SettingsConnect && window.SettingsConnect.back()", value -> {
             if ("false".equals(value) || "null".equals(value)) super.onBackPressed();
         });
     }
 
     @Override
     protected void onDestroy() {
-        webView.evaluateJavascript("window.SettingsChat && window.SettingsChat.shutdown()", null);
+        webView.evaluateJavascript("window.SettingsConnect && window.SettingsConnect.shutdown()", null);
         webView.destroy();
         super.onDestroy();
     }

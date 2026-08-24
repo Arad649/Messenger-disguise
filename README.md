@@ -1,51 +1,62 @@
-# Settings Chat
+# Settings Connect
 
-Settings Chat is an Android peer-to-peer messenger prototype based on the Nuvia concept. It is clearly labeled as a chat app and uses an original gear-and-chat icon; it does not impersonate Samsung Settings or use Samsung artwork.
+Settings Connect is a cross-platform peer-to-peer messenger prototype based on the Nuvia concept. It includes an Android APK and a portable Windows PC app that can communicate with each other. The launcher stays clearly identifiable as Settings Connect rather than impersonating Android's system Settings app.
 
 ## What works
 
-- Choose a universal `@UserID` (no country code or phone number)
-- Add a person by ID and see their online state
-- Send live text messages between two online devices
-- Record and play voice notes
-- Send images and original emoji stickers
-- Make live audio and video calls
+- Create a local account with a display name, public `@UserID`, and password
+- Require password sign-in whenever the app launches
+- Display the active `@UserID`, online state, and device type in every main header
+- Add a person by universal ID without a phone number or country code
+- Connect Android phones and Windows PCs under the same visible ID system
+- Send live text messages, voice notes, images, and original emoji stickers
+- Make peer-to-peer audio and video calls
 - Mute audio, disable video, and switch cameras during calls
-- Keep contacts, chat history, and call history locally on the device
-- Responsive dark Nuvia-style interface for Android 8.0+
+- Keep contacts, message history, and call history locally on each device
+- Run on Android 8.0+ and Windows 10/11 x64
 
 Connections use [PeerJS 1.5.5](https://peerjs.com/) and WebRTC. WebRTC data and media are encrypted in transit with DTLS/SRTP and normally travel directly between devices.
 
+## Account and device behavior
+
+The password is processed with PBKDF2-SHA-256 and a random salt, then stored as a derived hash in that device's local storage. The original password is not stored.
+
+This version has no central account server. To use the same visible ID on a phone and PC, create the same `@UserID` on each device. Each platform uses its own endpoint (`mobile` or `desktop`) so both can be online at once. Passwords and message history are not synchronized between devices.
+
 ## Important prototype limits
 
-This is a peer-to-peer test build, not a production replacement for WhatsApp:
+- Both people must have at least one phone or PC client open and online.
+- There is no offline delivery, push notification, cloud backup, remote account recovery, moderation, or abuse-reporting service.
+- Password sign-in protects the local copy on that device, but an ID is not permanently reserved globally without a server.
+- Some networks require a TURN relay. The free broker/STUN configuration cannot guarantee calls on every carrier or Wi-Fi network.
+- Attachments and local history are capped to reduce storage use.
+- The Windows executable is an unsigned development build, so Windows SmartScreen may display a warning.
 
-- Both users must have the app open and be online when connecting.
-- There is no offline delivery, push notification, cloud backup, account recovery, contact syncing, moderation, or abuse reporting service.
-- IDs are live PeerJS broker IDs, not password-protected accounts. An ID is not permanently reserved.
-- Some mobile networks require a TURN relay for WebRTC. The free broker/STUN configuration cannot guarantee connectivity on every carrier or Wi-Fi network.
-- Local history is limited, and image/voice attachments are deliberately capped to avoid filling WebView storage.
+A production release needs an authenticated backend, database, storage service, push notifications, TURN infrastructure, account recovery, safety tooling, code signing, and a security review.
 
-A production release needs an authenticated account backend, database, object storage, notification service, TURN infrastructure, safety tooling, and a security review.
+## Download Android
 
-## Download the APK
-
-1. Open this repository's **Actions** tab.
+1. Open the repository's **Actions** tab.
 2. Open the latest successful **Build Android APK** run.
-3. Under **Artifacts**, download `settings-chat-debug-apk`.
-4. Unzip it and install `app-debug.apk` on each Android phone.
+3. Download the `settings-connect-android-apk` artifact.
+4. Unzip it and install `app-debug.apk`.
 
-Android may ask you to allow installs from your browser or file manager. The app also asks for microphone and camera access for voice notes and calls.
+## Download Windows PC
 
-## Test between two phones
+1. Open the repository's **Actions** tab.
+2. Open the latest successful **Build Windows PC App** run.
+3. Download the `settings-connect-windows-pc` artifact.
+4. Unzip and run `Settings-Connect-PC-2.0.0.exe`.
 
-1. Install and open the APK on both phones.
-2. Choose a different ID on each phone, for example `@arad_test` and `@friend_test`.
-3. Keep both apps open and connected (green status dot).
-4. On one phone, tap **+**, enter the other ID, and tap **Connect**.
+## Test phone to PC
+
+1. Install Android on one device and Windows on the PC.
+2. Create different test IDs, such as `@arad_phone` and `@friend_pc`.
+3. Keep both clients open until the header says **online**.
+4. Tap or click **+**, enter the other person's ID, and select **Connect**.
 5. Open the contact to exchange messages or start a call.
 
-## Build locally
+## Build Android locally
 
 Requirements: JDK 17, Android SDK 35, and Gradle 8.11.1.
 
@@ -53,12 +64,20 @@ Requirements: JDK 17, Android SDK 35, and Gradle 8.11.1.
 gradle :app:assembleDebug
 ```
 
-The APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
+## Build Windows locally
+
+Requirements: Node.js 24 and npm.
+
+```bash
+cd desktop
+npm install
+npm run dist:win
+```
 
 ## Privacy
 
-Profiles, contacts, and message history are stored only in Android WebView local storage. Clearing app data or using **Delete local profile and messages** removes that local copy. The free PeerJS signalling service sees connection metadata needed to broker peers; message contents and media are sent over WebRTC.
+Account hashes, contacts, and message history remain in local app storage. The free PeerJS signalling service receives connection metadata needed to broker peers; message content and media use WebRTC.
 
 ## License
 
-Project code is provided under the MIT License. PeerJS is separately available under its MIT license.
+Project code is provided under the MIT License. PeerJS and Electron are separately available under their respective licenses.

@@ -1,0 +1,36 @@
+{
+  "name": "settings-connect-desktop",
+  "version": "2.0.0",
+  "description": "Settings Connect peer-to-peer desktop messenger",
+  "main": "main.js",
+  "author": "Arad649",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win portable --x64"
+  },
+  "devDependencies": {
+    "electron": "43.4.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.arad.settingsconnect.desktop",
+    "productName": "Settings Connect",
+    "asar": true,
+    "files": [
+      "main.js",
+      "index.html",
+      "icon.png"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "icon.png",
+      "artifactName": "Settings-Connect-PC-${version}.${ext}"
+    }
+  }
+}
