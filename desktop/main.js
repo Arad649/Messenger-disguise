@@ -69,7 +69,9 @@ function createWindow() {
 
   const allowedOrigin = 'settings-connect://app';
   session.defaultSession.setPermissionCheckHandler((webContents, permission, origin) => {
-    return webContents === win.webContents && origin.startsWith(allowedOrigin) && permission === 'media';
+    return webContents === win.webContents
+      && String(origin || '').startsWith(allowedOrigin)
+      && permission === 'media';
   });
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
     const allowed = webContents === win.webContents
@@ -84,6 +86,7 @@ function createWindow() {
   });
 
   win.webContents.on('render-process-gone', (_event, details) => {
+    if (details.reason === 'clean-exit') return;
     logEvent('Renderer stopped', `${details.reason} (exit code ${details.exitCode})`);
     if (!rendererRecoveryAttempted && !win.isDestroyed()) {
       rendererRecoveryAttempted = true;
