@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " SettingsConnect/2.3");
+        settings.setUserAgentString(settings.getUserAgentString() + " Nuvia/2.4");
         webView.setBackgroundColor(0xFF070B19);
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new AndroidBridge(), "AndroidApp");
@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
             while ((line = reader.readLine()) != null) html.append(line).append('\n');
             webView.loadDataWithBaseURL("https://settings-connect.local/", html.toString(), "text/html", "UTF-8", null);
         } catch (Exception error) {
-            Toast.makeText(this, "Could not open Settings Connect", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not open Nuvia", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -128,7 +128,7 @@ public class MainActivity extends Activity {
                 "Messages and calls",
                 NotificationManager.IMPORTANCE_HIGH
         );
-        channel.setDescription("New Settings Connect messages, stories, and incoming calls");
+        channel.setDescription("New Nuvia messages, stories, and incoming calls");
         channel.enableVibration(true);
         manager.createNotificationChannel(channel);
     }
@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.3.0";
+            return "2.4.0";
         }
 
         @JavascriptInterface

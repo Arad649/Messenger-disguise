@@ -28,7 +28,7 @@ function failStartup(error) {
   const message = error instanceof Error ? `${error.stack || error.message}` : String(error);
   const logPath = logEvent('Startup failure', message);
   dialog.showErrorBox(
-    'Settings Connect could not start',
+    'Nuvia could not start',
     `The app could not open its interface. ${logPath ? `A diagnostic log was saved to:\n${logPath}` : 'No diagnostic log could be written.'}`
   );
   app.quit();
@@ -54,7 +54,7 @@ function createWindow() {
     minWidth: 380,
     minHeight: 650,
     backgroundColor: '#070b19',
-    title: 'Settings Connect',
+    title: 'Nuvia',
     icon: path.join(__dirname, 'icon.png'),
     autoHideMenuBar: true,
     webPreferences: {
@@ -98,8 +98,8 @@ function createWindow() {
     }
 
     dialog.showErrorBox(
-      'Settings Connect stopped unexpectedly',
-      'The interface stopped twice and could not be recovered. Restart the app or use Settings Connect Web.'
+      'Nuvia stopped unexpectedly',
+      'The interface stopped twice and could not be recovered. Restart the app or use Nuvia Web.'
     );
   });
 

@@ -1,6 +1,6 @@
-# Settings Connect
+# Nuvia
 
-Settings Connect is a cross-platform peer-to-peer messenger prototype based on the Nuvia concept. It includes an Android APK, a portable Windows PC app, and an HTTPS browser version that can communicate with each other. The launcher stays clearly identifiable as Settings Connect rather than impersonating Android's system Settings app.
+Nuvia is a cross-platform peer-to-peer messenger prototype for Android, Windows, and the web. The three versions use the same universal `@UserID` system and can communicate with each other while both clients are online.
 
 ## What works
 
@@ -37,7 +37,7 @@ This version has no central account server. To use the same visible ID on a phon
 - Some networks require a TURN relay. The free broker/STUN configuration cannot guarantee calls on every carrier or Wi-Fi network.
 - Chat history has no app-defined message count or time limit. Device storage remains finite, and large media is stored separately in the browser/WebView media database.
 - The Windows executable is an unsigned development build, so Windows SmartScreen may display a warning.
-- Desktop version 2.3.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Settings Connect\\settings-connect.log`.
+- Desktop version 2.4.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Nuvia\\settings-connect.log`.
 
 A production release needs an authenticated backend, database, storage service, push notifications, TURN infrastructure, account recovery, safety tooling, code signing, and a security review.
 
@@ -45,19 +45,19 @@ A production release needs an authenticated backend, database, storage service, 
 
 1. Open the repository's **Actions** tab.
 2. Open the latest successful **Build Android APK** run.
-3. Download the `settings-connect-android-apk` artifact.
+3. Download the `nuvia-android-apk` artifact.
 4. Unzip it and install `app-debug.apk`.
 
 ## Download Windows PC
 
 1. Open the repository's **Actions** tab.
 2. Open the latest successful **Build Windows PC App** run.
-3. Download the `settings-connect-windows-pc` artifact.
-4. Unzip and run `Settings-Connect-PC-2.3.0.exe`.
+3. Download the `nuvia-windows-pc` artifact.
+4. Unzip and run `Nuvia-PC-2.4.0.exe`.
 
 ## Open in a browser
 
-Use [Settings Connect Web](https://settings-connect-web.arad649.chatgpt.site) on a Windows, macOS, Linux, Android, or iOS browser. Allow microphone/camera access when prompted for voice notes and calls. The browser version uses the same visible `@UserID` and peer-to-peer connection format as Android and Windows.
+Use [Nuvia Web](https://settings-connect-web.arad649.chatgpt.site) on a Windows, macOS, Linux, Android, or iOS browser. Allow microphone/camera access when prompted for voice notes and calls. The browser version uses the same visible `@UserID` and peer-to-peer connection format as Android and Windows.
 
 ## Test phone to PC
 
