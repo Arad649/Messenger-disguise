@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
@@ -30,7 +32,8 @@ public class MainActivity extends Activity {
     private static final int MEDIA_PERMISSION_REQUEST = 41;
     private static final int FILE_PICKER_REQUEST = 42;
     private static final int NOTIFICATION_PERMISSION_REQUEST = 43;
-    private static final String NOTIFICATION_CHANNEL = "settings_connect_messages";
+    private static final String NOTIFICATION_CHANNEL = "nuvia_messages";
+    private static final String SILENT_NOTIFICATION_CHANNEL = "nuvia_silent_messages";
     private WebView webView;
     private ValueCallback<Uri[]> fileCallback;
     private int notificationId = 100;
@@ -57,7 +60,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " Nuvia/2.8");
+        settings.setUserAgentString(settings.getUserAgentString() + " Nuvia/2.9");
         webView.setBackgroundColor(0xFF070B19);
         webView.setWebViewClient(new WebViewClient());
         webView.addJavascriptInterface(new AndroidBridge(), "AndroidApp");
@@ -131,6 +134,16 @@ public class MainActivity extends Activity {
         channel.setDescription("New Nuvia messages, stories, and incoming calls");
         channel.enableVibration(true);
         manager.createNotificationChannel(channel);
+
+        NotificationChannel silentChannel = new NotificationChannel(
+                SILENT_NOTIFICATION_CHANNEL,
+                "Silent messages",
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        silentChannel.setDescription("Nuvia messages intentionally sent without sound");
+        silentChannel.setSound(null, null);
+        silentChannel.enableVibration(false);
+        manager.createNotificationChannel(silentChannel);
     }
 
     private void requestNotificationPermission() {
@@ -140,7 +153,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void showNotification(String title, String body, String tag) {
+    private void showNotification(String title, String body, String tag, boolean silent) {
         if (Build.VERSION.SDK_INT >= 33
                 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
         Intent openIntent = new Intent(this, MainActivity.class)
@@ -152,19 +165,37 @@ public class MainActivity extends Activity {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
         boolean call = tag != null && tag.contains("call");
-        Notification notification = new Notification.Builder(this, NOTIFICATION_CHANNEL)
+        String channelId = silent ? SILENT_NOTIFICATION_CHANNEL : NOTIFICATION_CHANNEL;
+        Notification.Builder builder = new Notification.Builder(this, channelId)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setStyle(new Notification.BigTextStyle().bigText(body))
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setCategory(call ? Notification.CATEGORY_CALL : Notification.CATEGORY_MESSAGE)
-                .build();
+                .setVisibility(Notification.VISIBILITY_PRIVATE)
+                .setGroup(call ? "nuvia_calls" : "nuvia_conversations");
+
+        if (call) {
+            builder.setStyle(new Notification.BigTextStyle().bigText(body));
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Notification.Person sender = new Notification.Person.Builder().setName(title).build();
+            builder.setStyle(new Notification.MessagingStyle(sender)
+                    .setConversationTitle(title)
+                    .addMessage(body, System.currentTimeMillis(), sender));
+        } else {
+            builder.setStyle(new Notification.MessagingStyle("Nuvia")
+                    .setConversationTitle(title)
+                    .addMessage(body, System.currentTimeMillis(), title));
+        }
+
+        if (silent) builder.setSilent(true);
+        else builder.setDefaults(Notification.DEFAULT_ALL);
+        Notification notification = builder.build();
         NotificationManager manager = getSystemService(NotificationManager.class);
-        if (manager != null) manager.notify(notificationId++, notification);
+        int id = tag == null ? notificationId++ : 1000 + Math.abs(tag.hashCode() % 100000);
+        if (manager != null) manager.notify(tag == null ? "nuvia" : tag, id, notification);
     }
 
     @Override
@@ -207,7 +238,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String version() {
-            return "2.8.0";
+            return "2.9.0";
         }
 
         @JavascriptInterface
@@ -222,8 +253,22 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
-        public void notify(String title, String body, String tag) {
-            runOnUiThread(() -> showNotification(title, body, tag));
+        public void notify(String title, String body, String tag, boolean silent) {
+            runOnUiThread(() -> showNotification(title, body, tag, silent));
+        }
+
+        @JavascriptInterface
+        public void haptic(int milliseconds) {
+            runOnUiThread(() -> {
+                Vibrator vibrator = getSystemService(Vibrator.class);
+                if (vibrator == null || !vibrator.hasVibrator()) return;
+                int duration = Math.max(1, Math.min(milliseconds, 200));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    vibrator.vibrate(duration);
+                }
+            });
         }
     }
 }

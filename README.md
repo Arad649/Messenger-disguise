@@ -9,6 +9,14 @@ Nuvia is a cross-platform peer-to-peer messenger prototype for Android, Windows,
 - Require guests to create an account or log in before adding people, sending, posting, calling, sharing an ID, enabling notifications, or changing contacts
 - Animate tab changes, chat opening and closing, archived views, modal sheets, navigation icons, composers, and list content
 - Use a more varied visual system with asymmetric feature panels, flat divided settings, circular icons, pills, open lists, and fewer boxed rectangles
+- Play original optional sounds for navigation, sending, receiving, reactions, recording, and calls, with separate incoming-message and haptic controls
+- Reply to, edit, react to, search, pin, copy, retry, and delete messages from one consistent action sheet
+- Send polls, silent messages, view-once photos, and scheduled text messages while the scheduling device remains open
+- Show live typing indicators and optional read receipts and online presence
+- Pin chats, filter by unread or pinned conversations, and use the built-in **Saved messages** notebook across your own online devices
+- Set per-contact disappearing-message timers for 24 hours, 7 days, or 30 days
+- Personalize the accent color, text size, notification previews, and data-saving image quality
+- Run a privacy checkup that explains active protections and the prototype's remaining limitations
 - Stay signed in automatically by default, with an optional password-on-launch setting
 - Display the active `@UserID`, online state, and device type in every main header
 - Share your User ID and add link through the device share sheet, copy the ID, or show a scannable QR code
@@ -45,9 +53,11 @@ This version has no central account server. To use the same visible ID on a phon
 - Some networks require a TURN relay. The free broker/STUN configuration cannot guarantee calls on every carrier or Wi-Fi network.
 - Chat history has no app-defined message count or time limit. Device storage remains finite, and large media is stored separately in the browser/WebView media database.
 - The Windows executable is an unsigned development build, so Windows SmartScreen may display a warning.
-- Desktop version 2.8.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Nuvia\\settings-connect.log`.
+- Desktop version 2.9.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Nuvia\\settings-connect.log`.
 
 A production release needs an authenticated backend, database, storage service, push notifications, TURN infrastructure, account recovery, safety tooling, code signing, and a security review.
+
+See [PLAY_STORE_READINESS.md](PLAY_STORE_READINESS.md) for the current competitor benchmark, 2.9.0 improvements, and the remaining production launch checklist.
 
 ## Download Android
 
@@ -61,7 +71,7 @@ A production release needs an authenticated backend, database, storage service, 
 1. Open the repository's **Actions** tab.
 2. Open the latest successful **Build Windows PC App** run.
 3. Download the `nuvia-windows-pc` artifact.
-4. Unzip and run `Nuvia-PC-2.8.0.exe`.
+4. Unzip and run `Nuvia-PC-2.9.0.exe`.
 
 ## Open in a browser
 
