@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Person;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -180,7 +181,7 @@ public class MainActivity extends Activity {
         if (call) {
             builder.setStyle(new Notification.BigTextStyle().bigText(body));
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Notification.Person sender = new Notification.Person.Builder().setName(title).build();
+            Person sender = new Person.Builder().setName(title).build();
             builder.setStyle(new Notification.MessagingStyle(sender)
                     .setConversationTitle(title)
                     .addMessage(body, System.currentTimeMillis(), sender));
@@ -190,8 +191,7 @@ public class MainActivity extends Activity {
                     .addMessage(body, System.currentTimeMillis(), title));
         }
 
-        if (silent) builder.setSilent(true);
-        else builder.setDefaults(Notification.DEFAULT_ALL);
+        if (!silent) builder.setDefaults(Notification.DEFAULT_ALL);
         Notification notification = builder.build();
         NotificationManager manager = getSystemService(NotificationManager.class);
         int id = tag == null ? notificationId++ : 1000 + Math.abs(tag.hashCode() % 100000);
