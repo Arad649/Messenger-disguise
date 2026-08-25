@@ -7,6 +7,8 @@ Nuvia is a cross-platform peer-to-peer messenger prototype for Android, Windows,
 - Create a local account or choose **Log in** to save an existing `@UserID`, display name, and password on a new device
 - Continue as a clearly labeled guest to explore read-only demo chats, stories, contacts, archived conversations, and call history
 - Require guests to create an account or log in before adding people, sending, posting, calling, sharing an ID, enabling notifications, or changing contacts
+- Animate tab changes, chat opening and closing, archived views, modal sheets, navigation icons, composers, and list content
+- Use a more varied visual system with asymmetric feature panels, flat divided settings, circular icons, pills, open lists, and fewer boxed rectangles
 - Stay signed in automatically by default, with an optional password-on-launch setting
 - Display the active `@UserID`, online state, and device type in every main header
 - Share your User ID and add link through the device share sheet, copy the ID, or show a scannable QR code
@@ -43,7 +45,7 @@ This version has no central account server. To use the same visible ID on a phon
 - Some networks require a TURN relay. The free broker/STUN configuration cannot guarantee calls on every carrier or Wi-Fi network.
 - Chat history has no app-defined message count or time limit. Device storage remains finite, and large media is stored separately in the browser/WebView media database.
 - The Windows executable is an unsigned development build, so Windows SmartScreen may display a warning.
-- Desktop version 2.7.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Nuvia\\settings-connect.log`.
+- Desktop version 2.8.0 uses software rendering for wider GPU compatibility and writes startup diagnostics to `%APPDATA%\\Nuvia\\settings-connect.log`.
 
 A production release needs an authenticated backend, database, storage service, push notifications, TURN infrastructure, account recovery, safety tooling, code signing, and a security review.
 
@@ -59,7 +61,7 @@ A production release needs an authenticated backend, database, storage service, 
 1. Open the repository's **Actions** tab.
 2. Open the latest successful **Build Windows PC App** run.
 3. Download the `nuvia-windows-pc` artifact.
-4. Unzip and run `Nuvia-PC-2.7.0.exe`.
+4. Unzip and run `Nuvia-PC-2.8.0.exe`.
 
 ## Open in a browser
 
